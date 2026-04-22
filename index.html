@@ -71,25 +71,133 @@ body {
 /* ====== HERO ====== */
 .hero {
   background: linear-gradient(135deg, #fff5f7 0%, #ffe8ed 50%, #fff0f5 100%);
-  padding: 40px 28px 0;
+  padding: 40px 28px 32px;
   position: relative;
   overflow: hidden;
-  min-height: 340px;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 280px; height: 280px;
-  background: radial-gradient(circle, rgba(244,101,122,0.12) 0%, transparent 70%);
-  border-radius: 50%;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  gap: 0;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 55%;
+  flex: 1;
+}
+
+/* 右侧装饰区 */
+.hero-deco {
+  position: relative;
+  width: 140px;
+  height: 220px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* 大光晕 */
+.hero-deco .glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(244,101,122,0.25) 0%, rgba(255,143,163,0.1) 50%, transparent 75%);
+  border-radius: 50%;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+/* 中心圆形头像框 */
+.hero-deco .avatar-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD6DF, #FF8FA3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  box-shadow: 0 8px 28px rgba(244,101,122,0.35);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-8px); }
+}
+
+/* 旋转外环 */
+.hero-deco .orbit {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 120px; height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(244,101,122,0.3);
+  animation: spin 12s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hero-deco .orbit::before {
+  content: '✦';
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%);
+  color: var(--pink);
+  font-size: 14px;
+}
+
+/* 浮动小元素 */
+.hero-deco .petal {
+  position: absolute;
+  font-size: 16px;
+  animation: floatPetal 3s ease-in-out infinite;
+}
+.hero-deco .petal:nth-child(1) { top: 10px; right: 10px; animation-delay: 0s; }
+.hero-deco .petal:nth-child(2) { top: 20px; left: 0px; animation-delay: 0.8s; font-size: 12px; }
+.hero-deco .petal:nth-child(3) { bottom: 20px; right: 5px; animation-delay: 1.5s; font-size: 13px; }
+.hero-deco .petal:nth-child(4) { bottom: 40px; left: 5px; animation-delay: 0.4s; font-size: 11px; }
+
+@keyframes floatPetal {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(15deg); }
+}
+
+/* 评分小标签浮动 */
+.hero-deco .score-bubble {
+  position: absolute;
+  bottom: 30px; left: -10px;
+  background: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pink);
+  box-shadow: 0 4px 14px rgba(244,101,122,0.2);
+  white-space: nowrap;
+  animation: floatPetal 3.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.hero-deco .grade-bubble {
+  position: absolute;
+  top: 24px; right: -4px;
+  background: linear-gradient(135deg, var(--pink), var(--pink-light));
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 14px rgba(244,101,122,0.3);
+  animation: floatPetal 3s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 
 .hero-title {
@@ -765,6 +873,19 @@ canvas#radarChart {
       <span class="hero-badge">定制建议</span>
     </div>
   </div>
+
+  <!-- 右侧装饰 -->
+  <div class="hero-deco">
+    <span class="petal">🌸</span>
+    <span class="petal">✨</span>
+    <span class="petal">💫</span>
+    <span class="petal">🌺</span>
+    <div class="glow"></div>
+    <div class="orbit"></div>
+    <div class="avatar-ring">💎</div>
+    <div class="score-bubble">✦ AI 颜值分析</div>
+    <div class="grade-bubble">S+ 高级颜值</div>
+  </div>
 </div>
 
 <!-- 使用次数 -->
@@ -970,7 +1091,7 @@ async function startAnalysis() {
 
   try {
     // ⚠️ 把下面的URL换成你的Cloudflare Worker地址
-    const WORKER_URL = 'https://yanzhice-api.aliyahjin831.workers.dev';
+    const WORKER_URL = 'https://YOUR_WORKER.workers.dev';
 
     const response = await fetch(WORKER_URL, {
       method: 'POST',
